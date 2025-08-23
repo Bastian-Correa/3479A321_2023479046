@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: '2023479046',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -28,9 +28,11 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 193, 11, 165),
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: '2023479046'),
     );
   }
 }
@@ -64,6 +66,20 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
+    });
+  }
+
+  //Para disminuir
+  void _decrementCounter() {
+    setState(() {
+      _counter--;
+    });
+  }
+
+  //Para reiniciar
+  void _resetCounter() {
+    setState(() {
+      _counter = 0;
     });
   }
 
@@ -104,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('You have pushed the button this many times:'),
+            const Text('Pixel Art sobre una grilla personalizable'),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
@@ -117,6 +133,24 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+      //Botones de abajo
+      persistentFooterButtons: [
+        IconButton(
+          onPressed: _decrementCounter,
+          icon: const Icon(Icons.remove), //Icono para el -
+          tooltip: "Restar",
+        ),
+        IconButton(
+          onPressed: _incrementCounter,
+          icon: const Icon(Icons.add), //Icono para el +
+          tooltip: "Sumar",
+        ),
+        IconButton(
+          onPressed: _resetCounter,
+          icon: const Icon(Icons.refresh), //Icono para el reiniciar conteo
+          tooltip: "Restaurar",
+        ),
+      ],
     );
   }
 }
