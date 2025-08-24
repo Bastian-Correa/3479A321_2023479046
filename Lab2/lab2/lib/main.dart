@@ -6,30 +6,13 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '2023479046',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 193, 11, 165),
+          seedColor: const Color.fromARGB(255, 239, 235, 239),
         ),
       ),
       home: const MyHomePage(title: '2023479046'),
@@ -39,16 +22,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -58,13 +31,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  //Color para todo (App y botones)
+  Color _themeColor = const Color.fromARGB(255, 211, 182, 231);
+
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
     });
   }
@@ -83,41 +54,66 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  //Abre la paleta de colores
+  void _palette() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          height: 260, //Tamaño de la paleta
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Elige un color',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  _colorOption(const Color.fromARGB(255, 233, 30, 99)),
+                  _colorOption(const Color.fromARGB(255, 0, 151, 136)),
+                  _colorOption(const Color.fromARGB(255, 255, 153, 0)),
+                  _colorOption(const Color.fromARGB(255, 156, 39, 176)),
+                  _colorOption(const Color.fromARGB(255, 33, 153, 251)),
+                  _colorOption(const Color.fromARGB(255, 74, 233, 30)),
+                  _colorOption(const Color.fromARGB(255, 17, 0, 255)),
+                  _colorOption(const Color.fromARGB(255, 251, 255, 0)),
+                  _colorOption(const Color.fromARGB(255, 0, 255, 225)),
+                  _colorOption(const Color.fromARGB(255, 255, 0, 0)),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  //Un circulito que al tocarlo cambia el color del tema
+  Widget _colorOption(Color color) {
+    return GestureDetector(
+      onTap: () {
+        setState(() => _themeColor = color);
+        Navigator.pop(context); //Cerrar el modal
+      },
+      child: CircleAvatar(backgroundColor: color, radius: 24),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
+        backgroundColor: _themeColor, //Usa el color elegido de la paleta
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text('Pixel Art sobre una grilla personalizable'),
@@ -128,27 +124,73 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+
+      //Botón de Paleta
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+        onPressed: _palette,
+        tooltip: 'Elegir color',
+        backgroundColor: _themeColor,
+        child: const Icon(Icons.palette),
+      ),
+
       //Botones de abajo
       persistentFooterButtons: [
-        IconButton(
-          onPressed: _decrementCounter,
-          icon: const Icon(Icons.remove), //Icono para el -
-          tooltip: "Restar",
-        ),
-        IconButton(
-          onPressed: _incrementCounter,
-          icon: const Icon(Icons.add), //Icono para el +
-          tooltip: "Sumar",
-        ),
-        IconButton(
-          onPressed: _resetCounter,
-          icon: const Icon(Icons.refresh), //Icono para el reiniciar conteo
-          tooltip: "Restaurar",
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: _decrementCounter, //Botón de Menos
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    12,
+                  ), ////Botón Cubito semicircular
+                ),
+                padding: const EdgeInsets.all(10), //Espacio alrededor del icono
+                backgroundColor: _themeColor, //Color asignado de paleta
+              ),
+              child: const Icon(
+                Icons.remove,
+                color: Color.fromARGB(255, 0, 0, 0),
+              ), //Icono dentro
+            ),
+
+            const SizedBox(width: 40),
+            ElevatedButton(
+              onPressed: _incrementCounter, //Botón de Mas
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    12,
+                  ), ////Botón Cubito semicircular
+                ),
+                padding: const EdgeInsets.all(10), //Espacio alrededor del icono
+                backgroundColor: _themeColor, //Color asignado de paleta
+              ),
+              child: const Icon(
+                Icons.add,
+                color: Color.fromARGB(255, 0, 0, 0),
+              ), //Icono dentro
+            ),
+
+            const SizedBox(width: 40),
+            ElevatedButton(
+              onPressed: _resetCounter, //Botón de Reiniciar
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    12,
+                  ), ////Botón Cubito semicircular
+                ),
+                padding: const EdgeInsets.all(10), //Espacio alrededor del icono
+                backgroundColor: _themeColor, //Color asignado de paleta
+              ),
+              child: const Icon(
+                Icons.refresh,
+                color: Color.fromARGB(255, 0, 0, 0),
+              ), //Icono dentro
+            ),
+          ],
         ),
       ],
     );
