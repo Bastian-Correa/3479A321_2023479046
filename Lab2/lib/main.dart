@@ -212,7 +212,19 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            Image.asset('assets/Pizza.png', height: 200, width: 300),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  children: [
+                    Image.asset('assets/Pizza.png', height: 200, width: 300),
+                    Image.asset('assets/Pizza.png', height: 200, width: 300),
+                    Image.asset('assets/Pizza.png', height: 200, width: 300),
+                    Image.asset('assets/Pizza.png', height: 200, width: 300),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
