@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart' show Logger;
 
 void main() {
   runApp(const MyApp());
@@ -8,6 +9,8 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
+    var logger = Logger();
+    logger.d("Logger is working!");
     return MaterialApp(
       title: '2023479046',
       theme: ThemeData(),
@@ -209,6 +212,7 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            Image.asset('assets/Pizza.png', height: 200, width: 300),
           ],
         ),
       ),
