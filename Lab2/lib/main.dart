@@ -22,13 +22,20 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _log = Logger();
+
   int _counter = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _log.d('MyHomePage is running!');
+  }
 
   //Color para todo (App y botones al comenzar al app)
   Color _themeColor = const Color.fromARGB(255, 211, 182, 231);
@@ -214,13 +221,12 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Expanded(
               child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
+                scrollDirection: Axis.horizontal,
+                child: Row(
                   children: [
                     Image.asset('assets/Pizza.png', height: 200, width: 300),
-                    Image.asset('assets/Pizza.png', height: 200, width: 300),
-                    Image.asset('assets/Pizza.png', height: 200, width: 300),
-                    Image.asset('assets/Pizza.png', height: 200, width: 300),
+                    Image.asset('assets/Aji.png', height: 200, width: 300),
+                    Image.asset('assets/Sandia.png', height: 200, width: 300),
                   ],
                 ),
               ),
