@@ -1,240 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart' show Logger;
+import 'pages/home.dart'; // importa la pantalla
+
+final _log = Logger();
 
 void main() {
+  _log.d('MI APP INICIANDO!');
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    var logger = Logger();
-    logger.d("Logger is working!");
     return MaterialApp(
       title: '2023479046',
-      theme: ThemeData(),
-      home: const MyHomePage(title: '2023479046'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  final _log = Logger();
-
-  int _counter = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _log.d('MyHomePage is running!');
-  }
-
-  //Color para todo (App y botones al comenzar al app)
-  Color _themeColor = const Color.fromARGB(255, 211, 182, 231);
-
-  //Valor de reinicio (es 0)
-  static const int _defaultCounter = 0;
-
-  //Para Aumentar
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  //Para disminuir
-  void _decrementCounter() {
-    setState(() {
-      _counter--;
-    });
-  }
-
-  //Para reiniciar
-  void _resetCounter() {
-    setState(() {
-      _counter = _defaultCounter; // Usa constante
-    });
-  }
-
-  //Abre la paleta de colores
-  void _palette() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(20),
-          height: 260, //Tamaño de la paleta
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Elige un color',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 12,
-                runSpacing: 12,
-                children: [
-                  _colorOption(const Color.fromARGB(255, 233, 30, 99)),
-                  _colorOption(const Color.fromARGB(255, 0, 151, 136)),
-                  _colorOption(const Color.fromARGB(255, 255, 153, 0)),
-                  _colorOption(const Color.fromARGB(255, 156, 39, 176)),
-                  _colorOption(const Color.fromARGB(255, 33, 153, 251)),
-                  _colorOption(const Color.fromARGB(255, 74, 233, 30)),
-                  _colorOption(const Color.fromARGB(255, 17, 0, 255)),
-                  _colorOption(const Color.fromARGB(255, 251, 255, 0)),
-                  _colorOption(const Color.fromARGB(255, 0, 255, 225)),
-                  _colorOption(const Color.fromARGB(255, 255, 0, 0)),
-                ],
-              ),
-            ],
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 0, 108, 108),
+        ),
+        textTheme: GoogleFonts.poppinsTextTheme(),
+        appBarTheme: AppBarTheme(
+          // Para que el titulo del AppBar tambien use la fuente (la ennegreceremos para que sea mas facil de ver)
+          titleTextStyle: GoogleFonts.poppins(
+            //Aplica la fuente a toda la aplicación de forma directa
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
           ),
-        );
-      },
-    );
-  }
-
-  //Un circulito que al tocarlo cambia el color del tema
-  Widget _colorOption(Color color) {
-    return GestureDetector(
-      onTap: () {
-        setState(() => _themeColor = color);
-        Navigator.pop(context); //Cerrar el modal
-      },
-      child: CircleAvatar(backgroundColor: color, radius: 24),
-    );
-  }
-
-  // Metodo que concentra "todos" los botones al pie
-  List<Widget> _buildFooterButtons() {
-    return [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Botón de Menos
-          ElevatedButton(
-            onPressed: _decrementCounter,
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  12,
-                ), // Botón Cubito semicircular
-              ),
-              padding: const EdgeInsets.all(5), // Espacio alrededor del icono
-              backgroundColor: _themeColor, // Color asignado de paleta
-            ),
-            child: const Icon(
-              Icons.remove,
-              color: Color.fromARGB(255, 0, 0, 0),
-            ), // Icono dentro
-          ),
-
-          const SizedBox(width: 20),
-
-          // Botón de Más
-          ElevatedButton(
-            onPressed: _incrementCounter,
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  12,
-                ), // Botón Cubito semicircular
-              ),
-              padding: const EdgeInsets.all(5), // Espacio alrededor del icono
-              backgroundColor: _themeColor, // Color asignado de paleta
-            ),
-            child: const Icon(
-              Icons.add,
-              color: Color.fromARGB(255, 0, 0, 0),
-            ), // Icono dentro
-          ),
-
-          const SizedBox(width: 20),
-
-          // Botón de Reiniciar
-          ElevatedButton(
-            onPressed: _resetCounter,
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  12,
-                ), // Botón Cubito semicircular
-              ),
-              padding: const EdgeInsets.all(5), // Espacio alrededor del icono
-              backgroundColor: _themeColor, // Color asignado de paleta
-            ),
-            child: const Icon(
-              Icons.refresh,
-              color: Color.fromARGB(255, 0, 0, 0),
-            ), // Icono dentro
-          ),
-
-          const SizedBox(width: 20),
-
-          // Botón de paleta, abajo en el pie con los demas botones
-          ElevatedButton(
-            onPressed: _palette,
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  12,
-                ), // Botón Cubito semicircular
-              ),
-              padding: const EdgeInsets.all(5), // Espacio alrededor del icono
-              backgroundColor: _themeColor, // Color asignado de paleta
-            ),
-            child: const Icon(
-              Icons.palette,
-              color: Color.fromARGB(255, 0, 0, 0),
-            ), // Icono dentro
-          ),
-        ],
-      ),
-    ];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: _themeColor, // Usa el color elegido de la paleta
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('Pixel Art sobre una grilla personalizable'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Image.asset('assets/Pizza.png', height: 200, width: 300),
-                    Image.asset('assets/Aji.png', height: 200, width: 300),
-                    Image.asset('assets/Sandia.png', height: 200, width: 300),
-                  ],
-                ),
-              ),
-            ),
-          ],
         ),
       ),
-      persistentFooterButtons: _buildFooterButtons(),
+      home: const MyHomePage(title: '2023479046'),
     );
   }
 }
