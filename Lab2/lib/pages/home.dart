@@ -180,7 +180,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: _themeColor, // Usa el color elegido de la paleta
+        backgroundColor: Theme.of(
+          context,
+        ).colorScheme.primary, // Usa el color elegido de la paleta primary
         title: Text(widget.title),
       ),
       body: Center(
