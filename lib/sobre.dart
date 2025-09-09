@@ -1,40 +1,46 @@
 import 'package:flutter/material.dart';
 
-/// Flutter code sample for [Card].
-
-void main() => runApp(const CardExampleApp());
-
-class CardExampleApp extends StatelessWidget {
-  const CardExampleApp({super.key});
+class AboutScreen extends StatelessWidget {
+  const AboutScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Card Sample')),
-        body: const CardExample(),
-      ),
-    );
-  }
-}
+    return Scaffold(
+      // AppBar con el título de la pantalla "Sobre"
+      appBar: AppBar(title: const Text('Sobre el proyecto')),
 
-class CardExample extends StatelessWidget {
-  const CardExample({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Card(
-        clipBehavior: Clip.hardEdge,
-        child: InkWell(
-          splashColor: const Color.fromARGB(255, 25, 248, 0).withAlpha(30),
-          onTap: () {
-            debugPrint('Card tapped.');
-          },
-          child: const SizedBox(
-            width: 300,
-            height: 100,
-            child: Text('A card that can be tapped'),
+      // Padding externo para separar la Card de los bordes de la pantalla
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Desarrollador: Bastián Correa',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8), // espacio entre título y descripción
+                const Text(
+                  'Proyecto de pixel art con navegación básica entre pantallas, '
+                  'listas con ListView y uso de Card para la pantalla principal.',
+                ),
+                const SizedBox(height: 16),
+                // Botón Volver alineado a la derecha
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton.icon(
+                    // Navigator.pop: vuelve a la pantalla anterior
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back),
+                    label: const Text('Volver'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
