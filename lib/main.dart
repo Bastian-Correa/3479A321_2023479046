@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'list_art.dart';
+import 'lista_creaciones.dart';
+import 'sobre.dart';
 
 void main() {
   runApp(const MyApp());
@@ -212,6 +215,106 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      persistentFooterButtons: _buildFooterButtons(),
+    );
+  }
+}
+
+  // --- CARD de Home con título + imagen + botones (Crear / Compartir) ---
+  Widget _buildHomeCard(BuildContext context) {
+    return Card(
+      elevation: 3,
+      margin: const EdgeInsets.all(16),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'Pixel Art sobre una grilla personalizable',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+
+            // Imagen (usa Asset si tienes uno; aquí queda placeholder)
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Container(
+                color: Colors.black12,
+                // Si tienes un asset real:
+                // child: Image.asset('assets/preview.png', fit: BoxFit.cover),
+                child: const Center(child: Text('Imágenes.')),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // Botones Crear / Compartir
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.brush),
+                  label: const Text('Crear'),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ListArtScreen()),
+                    );
+                  },
+                ),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.share),
+                  label: const Text('Compartir'),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Compartir (placeholder)')),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: _themeColor, // Usa el color elegido de la paleta
+        title: Text(widget.title),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'sobre') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SobreScreen()),
+                );
+              } else if (value == 'creaciones') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ListaCreacionesScreen()),
+                );
+              }
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem<String>(value: 'sobre', child: Text('Sobre')),
+              PopupMenuItem<String>(value: 'creaciones', child: Text('Mis creaciones')),
+            ],
+          ),
+        ],
+      ),
+
+      // Muestra la Card solicitada en el centro
+      body: Center(child: _buildHomeCard(context)),
+
+      // Mantiene los botones del pie
       persistentFooterButtons: _buildFooterButtons(),
     );
   }
