@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'list_art.dart';
+import 'lista_creaciones.dart';
+import 'sobre.dart';
 
 void main() {
   runApp(const MyApp());
@@ -143,10 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: const EdgeInsets.all(5), // Espacio alrededor del icono
               backgroundColor: _themeColor, // Color asignado de paleta
             ),
-            child: const Icon(
-              Icons.add,
-              color: Color.fromARGB(255, 0, 0, 0),
-            ), // Icono dentro
+            child: const Icon(Icons.add, color: Color.fromARGB(255, 0, 0, 0)),
           ),
 
           const SizedBox(width: 20),
@@ -156,9 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: _resetCounter,
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  12,
-                ), // Botón Cubito semicircular
+                borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.all(5), // Espacio alrededor del icono
               backgroundColor: _themeColor, // Color asignado de paleta
@@ -176,9 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: _palette,
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  12,
-                ), // Botón Cubito semicircular
+                borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.all(5), // Espacio alrededor del icono
               backgroundColor: _themeColor, // Color asignado de paleta
@@ -199,17 +195,137 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: _themeColor, // Usa el color elegido de la paleta
         title: Text(widget.title),
+        actions: [
+          // Ícono que abre la pantalla "Sobre" (Navigator.push)
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            tooltip: 'Sobre',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AboutScreen()),
+              );
+            },
+          ),
+        ],
       ),
+
+      //Card principal del Home
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('Pixel Art sobre una grilla personalizable'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+        child: Card(
+          margin: const EdgeInsets.all(16),
+          clipBehavior: Clip
+              .hardEdge, // recorta contenido que se salga (en este caso la imagen)
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // alto ajustado al contenido
+            children: [
+              SizedBox(
+                height: 160,
+                width: double.infinity,
+                child: Image.asset('assets/Fondo.jpg', fit: BoxFit.cover),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Pixel Arts',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Contador: $_counter',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    const SizedBox(height: 12),
+
+                    //Botones con tamaños configurables
+                    Row(
+                      children: [
+                        // Crear
+                        SizedBox(
+                          width: 100, // ancho
+                          height: 40, // altura
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const ListArtScreen(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.brush, size: 18),
+                            label: const Text(
+                              'Crear',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(width: 12),
+
+                        // Compartir
+                        SizedBox(
+                          width: 100,
+                          height: 40,
+                          child: OutlinedButton.icon(
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Compartido')),
+                              );
+                            },
+                            icon: const Icon(Icons.share, size: 18),
+                            label: const Text(
+                              'Compartir',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                            ),
+                          ),
+                        ),
+
+                        const Spacer(),
+
+                        // Creaciones
+                        SizedBox(
+                          width: 100,
+                          height: 40,
+                          child: TextButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const CreacionesScreen(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.collections, size: 18),
+                            label: const Text(
+                              'Creaciones',
+                              style: TextStyle(fontSize: 13),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       persistentFooterButtons: _buildFooterButtons(),
