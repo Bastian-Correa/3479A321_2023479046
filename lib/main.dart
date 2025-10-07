@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'list_art.dart';
 import 'lista_creaciones.dart';
 import 'sobre.dart';
+import 'package:lab2/pixel_art_screen.dart';
+import 'package:provider/provider.dart';
+import 'providers/configuration_data.dart';
+import 'config_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,10 +15,13 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '2023479046',
-      theme: ThemeData(),
-      home: const MyHomePage(title: '2023479046'),
+    return ChangeNotifierProvider<ConfigurationData>(
+      create: (_) => ConfigurationData(),
+      child: MaterialApp(
+        title: '2023479046',
+        theme: ThemeData(),
+        home: const MyHomePage(title: '2023479046'),
+      ),
     );
   }
 }
@@ -97,12 +104,12 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  //Un circulito que al tocarlo cambia el color del tema
+  // Un circulito que al tocarlo cambia el color del tema
   Widget _colorOption(Color color) {
     return GestureDetector(
       onTap: () {
         setState(() => _themeColor = color);
-        Navigator.pop(context); //Cerrar el modal
+        Navigator.pop(context); // Cerrar el modal
       },
       child: CircleAvatar(backgroundColor: color, radius: 24),
     );
@@ -196,7 +203,19 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: _themeColor, // Usa el color elegido de la paleta
         title: Text(widget.title),
         actions: [
-          // Ícono que abre la pantalla "Sobre" (Navigator.push)
+          //Botón para abrir Configuración
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: 'Configuración',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ConfigScreen()),
+              );
+            },
+          ),
+
+          // Ícono que abre la pantalla "Sobre"
           IconButton(
             icon: const Icon(Icons.info_outline),
             tooltip: 'Sobre',
@@ -248,7 +267,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         // Crear
                         SizedBox(
-                          width: 100, // ancho
+                          width: 80, // ancho
                           height: 40, // altura
                           child: ElevatedButton.icon(
                             onPressed: () {
@@ -259,7 +278,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                               );
                             },
-                            icon: const Icon(Icons.brush, size: 18),
+                            icon: const Icon(Icons.brush, size: 12),
                             label: const Text(
                               'Crear',
                               style: TextStyle(fontSize: 14),
@@ -274,7 +293,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                         // Compartir
                         SizedBox(
-                          width: 100,
+                          width: 90,
                           height: 40,
                           child: OutlinedButton.icon(
                             onPressed: () {
@@ -282,7 +301,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 const SnackBar(content: Text('Compartido')),
                               );
                             },
-                            icon: const Icon(Icons.share, size: 18),
+                            icon: const Icon(Icons.share, size: 12),
                             label: const Text(
                               'Compartir',
                               style: TextStyle(fontSize: 14),
@@ -297,7 +316,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                         // Creaciones
                         SizedBox(
-                          width: 100,
+                          width: 90,
                           height: 40,
                           child: TextButton.icon(
                             onPressed: () {
@@ -308,7 +327,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                               );
                             },
-                            icon: const Icon(Icons.collections, size: 18),
+                            icon: const Icon(Icons.collections, size: 12),
                             label: const Text(
                               'Creaciones',
                               style: TextStyle(fontSize: 13),
@@ -318,6 +337,21 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: EdgeInsets.zero,
                             ),
                           ),
+                        ),
+
+                        // Ir a la pantalla de estados
+                        IconButton(
+                          icon: const Icon(Icons.monitor_heart),
+                          tooltip: 'Estados',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    PixelArtScreen(parentCounter: _counter),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
