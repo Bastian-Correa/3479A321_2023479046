@@ -1,22 +1,47 @@
 import 'package:flutter/material.dart';
+import '../services/shared_preferences_service.dart';
 
 /// Centro de configuración global de la app.
 class ConfigurationData extends ChangeNotifier {
+  final SharedPreferencesService _prefsService;
+
+  // Estado interno
   int _size = 16;
+  String _paletteKey = 'cian';
+  Color _paletteColor = const Color(0xFF009688);
+
   int get size => _size;
-  void setSize(int newSize) {
-    _size = newSize;
+  String get paletteKey => _paletteKey;
+  Color get paletteColor => _paletteColor;
+
+  ConfigurationData(this._prefsService) {
+    _loadPreferences();
+  }
+
+  Future<void> _loadPreferences() async {
+    final savedSize = await _prefsService.getSize();
+    if (savedSize != null) _size = savedSize;
+
+    final savedKey = await _prefsService.getPaletteKey();
+    if (savedKey != null) {
+      // usa el setter para mapear color y, de paso, dejar clave coherente
+      _applyPaletteFromKey(savedKey, persist: false);
+    }
+
     notifyListeners();
   }
 
-  // Usamos una clave para guardarlo y un color visible.
-  String _paletteKey = 'cian';
-  String get paletteKey => _paletteKey;
+  // Setters que actualizan estado, notifican y persisten
+  void setSize(int newSize) {
+    if (_size == newSize) return;
+    _size = newSize;
+    notifyListeners();
+    _prefsService.setSize(newSize); // persistir
+  }
 
-  Color _paletteColor = const Color(0xFF009688);
-  Color get paletteColor => _paletteColor;
+  void setPalette(String key) => _applyPaletteFromKey(key, persist: true);
 
-  void setPalette(String key) {
+  void _applyPaletteFromKey(String key, {required bool persist}) {
     _paletteKey = key;
     switch (key) {
       case 'magenta':
@@ -30,10 +55,11 @@ class ConfigurationData extends ChangeNotifier {
         break;
       case 'cian':
       default:
-        _paletteColor = const Color(0xFF009688);
         _paletteKey = 'cian';
+        _paletteColor = const Color(0xFF009688);
         break;
     }
     notifyListeners();
+    if (persist) _prefsService.setPaletteKey(_paletteKey);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/configuration_data.dart';
+import 'services/shared_preferences_service.dart';
 import 'home.dart';
 
 void main() {
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ConfigurationData>(
-      create: (_) => ConfigurationData(),
+      create: (context) => ConfigurationData(SharedPreferencesService()),
       child: MaterialApp(
         title: '2023479046',
         debugShowCheckedModeBanner: false,

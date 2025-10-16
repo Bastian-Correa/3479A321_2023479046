@@ -4,6 +4,8 @@ import 'lista_creaciones.dart';
 import 'sobre.dart';
 import 'config_screen.dart';
 import 'package:lab2/pixel_art_screen.dart';
+import 'package:provider/provider.dart';
+import 'providers/configuration_data.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -17,7 +19,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   // Color para todo (App y botones al comenzar al app)
-  Color _themeColor = const Color.fromARGB(255, 211, 182, 231);
+  //Color _themeColor = const Color.fromARGB(255, 211, 182, 231);
 
   // Valor de reinicio (es 0)
   static const int _defaultCounter = 0;
@@ -50,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (BuildContext context) {
         return Container(
           padding: const EdgeInsets.all(20),
-          height: 260, // Tamaño de la paleta
+          height: 260,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -64,16 +66,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 spacing: 12,
                 runSpacing: 12,
                 children: [
-                  _colorOption(const Color.fromARGB(255, 233, 30, 99)),
-                  _colorOption(const Color.fromARGB(255, 0, 151, 136)),
-                  _colorOption(const Color.fromARGB(255, 255, 153, 0)),
-                  _colorOption(const Color.fromARGB(255, 156, 39, 176)),
-                  _colorOption(const Color.fromARGB(255, 33, 153, 251)),
-                  _colorOption(const Color.fromARGB(255, 74, 233, 30)),
-                  _colorOption(const Color.fromARGB(255, 17, 0, 255)),
-                  _colorOption(const Color.fromARGB(255, 251, 255, 0)),
-                  _colorOption(const Color.fromARGB(255, 0, 255, 225)),
-                  _colorOption(const Color.fromARGB(255, 255, 0, 0)),
+                  _colorOption('magenta', const Color(0xFFE91E63)),
+                  _colorOption('cian', const Color(0xFF009688)),
+                  _colorOption('amber', const Color(0xFFFFC107)),
+                  _colorOption('purple', const Color(0xFF9C27B0)),
                 ],
               ),
             ],
@@ -83,19 +79,20 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  // Un circulito que al tocarlo cambia el color del tema
-  Widget _colorOption(Color color) {
+  Widget _colorOption(String key, Color color) {
     return GestureDetector(
       onTap: () {
-        setState(() => _themeColor = color);
-        Navigator.pop(context); // Cerrar el modal
+        context.read<ConfigurationData>().setPalette(
+          key,
+        ); // <- guarda y notifica
+        Navigator.pop(context);
       },
       child: CircleAvatar(backgroundColor: color, radius: 24),
     );
   }
 
   // Metodo que concentra "todos" los botones al pie
-  List<Widget> _buildFooterButtons() {
+  List<Widget> _buildFooterButtons(Color themeColor) {
     return [
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -108,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.all(5),
-              backgroundColor: _themeColor,
+              backgroundColor: themeColor,
             ),
             child: const Icon(
               Icons.remove,
@@ -126,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.all(5),
-              backgroundColor: _themeColor,
+              backgroundColor: themeColor,
             ),
             child: const Icon(Icons.add, color: Color.fromARGB(255, 0, 0, 0)),
           ),
@@ -141,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.all(5),
-              backgroundColor: _themeColor,
+              backgroundColor: themeColor,
             ),
             child: const Icon(
               Icons.refresh,
@@ -159,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.all(5),
-              backgroundColor: _themeColor,
+              backgroundColor: themeColor,
             ),
             child: const Icon(
               Icons.palette,
@@ -173,9 +170,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Tomamos el color actual desde el Provider
+    final cfg = context.watch<ConfigurationData>();
+    final themeColor = cfg.paletteColor;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: _themeColor, // Usa el color elegido de la paleta
+        backgroundColor: themeColor, // Usa el color elegido de la paleta
         title: Text(widget.title),
         actions: [
           // Botón para abrir Configuración
@@ -336,7 +337,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      persistentFooterButtons: _buildFooterButtons(),
+      persistentFooterButtons: _buildFooterButtons(themeColor),
     );
   }
 }
