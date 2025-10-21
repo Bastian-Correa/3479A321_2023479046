@@ -10,6 +10,10 @@ class ConfigurationData extends ChangeNotifier {
   String _paletteKey = 'cian';
   Color _paletteColor = const Color(0xFF009688);
 
+  //lista de creaciones
+  final List<String> _creations = [];
+  List<String> get creations => List.unmodifiable(_creations);
+
   int get size => _size;
   String get paletteKey => _paletteKey;
   Color get paletteColor => _paletteColor;
@@ -61,5 +65,11 @@ class ConfigurationData extends ChangeNotifier {
     }
     notifyListeners();
     if (persist) _prefsService.setPaletteKey(_paletteKey);
+  }
+
+  //Método para agregar una creación
+  void addCreation(String filePath) {
+    _creations.add(filePath);
+    notifyListeners();
   }
 }

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/configuration_data.dart';
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+import 'package:path_provider/path_provider.dart';
+
 // ignore_for_file: library_private_types_in_public_api
 
 class PixelArtScreen extends StatefulWidget {
@@ -68,6 +73,76 @@ class _PixelArtScreenState extends State<PixelArtScreen> {
     }
   }
 
+  //Guardar el pixel art como PNG en almacenamiento persistente
+  Future<void> _savePixelArt() async {
+    const double cellSize = 20.0; // tamaño de cada celda
+
+    try {
+      final recorder = ui.PictureRecorder();
+      final canvas = Canvas(
+        recorder,
+        Rect.fromLTWH(0, 0, _sizeGrid * cellSize, _sizeGrid * cellSize),
+      );
+
+      // Fondo blanco
+      canvas.drawRect(
+        Rect.fromLTWH(0, 0, _sizeGrid * cellSize, _sizeGrid * cellSize),
+        Paint()..color = Colors.white,
+      );
+
+      //Pintar cada celda con su color actual (no dibujamos números)
+      final paint = Paint();
+      for (int row = 0; row < _sizeGrid; row++) {
+        for (int col = 0; col < _sizeGrid; col++) {
+          final idx = row * _sizeGrid + col;
+          paint.color = _cellColors[idx];
+          final rect = Rect.fromLTWH(
+            col * cellSize,
+            row * cellSize,
+            cellSize,
+            cellSize,
+          );
+          canvas.drawRect(rect, paint);
+        }
+      }
+
+      //Cerrar grabación y rasterizar a imagen
+      final picture = recorder.endRecording();
+      final width = (_sizeGrid * cellSize).toInt();
+      final height = (_sizeGrid * cellSize).toInt();
+      final image = await picture.toImage(width, height);
+
+      //Codificar a PNG
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) throw Exception('No se pudo codificar a PNG');
+      final Uint8List pngBytes = byteData.buffer.asUint8List();
+
+      //Guardar en el directorio de documentos de la app
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath =
+          '${directory.path}/pixel_art_${DateTime.now().millisecondsSinceEpoch}.png';
+      final file = File(filePath);
+      await file.writeAsBytes(pngBytes);
+
+      //Registrar la creación
+      if (mounted) {
+        context.read<ConfigurationData>().addCreation(filePath);
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Pixel art guardado en: $filePath')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error al guardar: $e')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,6 +154,12 @@ class _PixelArtScreenState extends State<PixelArtScreen> {
             tooltip: _showNumbers ? 'Ocultar números' : 'Mostrar números',
             icon: Icon(_showNumbers ? Icons.visibility : Icons.visibility_off),
             onPressed: () => setState(() => _showNumbers = !_showNumbers),
+          ),
+          //Botón para guardar PNG
+          IconButton(
+            tooltip: 'Guardar PNG',
+            icon: const Icon(Icons.save_alt),
+            onPressed: _savePixelArt,
           ),
         ],
       ),
