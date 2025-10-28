@@ -7,8 +7,7 @@ class ConfigScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cfg = context
-        .watch<ConfigurationData>(); // para estar atento a los cambios
+    final cfg = context.watch<ConfigurationData>(); // escucha cambios
 
     return Scaffold(
       appBar: AppBar(title: const Text('Configuración')),
@@ -23,7 +22,6 @@ class ConfigScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            //Tamaños para el pixel art
             DropdownButtonFormField<int>(
               value: cfg.size, // valor actual del provider
               decoration: const InputDecoration(
@@ -94,6 +92,31 @@ class ConfigScreen extends StatelessWidget {
                     border: Border.all(color: Colors.black12),
                   ),
                 ),
+              ],
+            ),
+
+            const SizedBox(height: 32),
+
+            //Slider de opacidad persistente
+            const Text(
+              'Opacidad de la imagen de referencia',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Slider(
+                    value: cfg.backgroundOpacity, // watch para leer
+                    min: 0.1,
+                    max: 1.0,
+                    divisions: 10,
+                    label: '${(cfg.backgroundOpacity * 100).toInt()}%',
+                    onChanged: (v) => context
+                        .read<ConfigurationData>() // read para setear
+                        .setBackgroundOpacity(v),
+                  ),
+                ),
+                Text('${(cfg.backgroundOpacity * 100).toInt()}%'),
               ],
             ),
           ],

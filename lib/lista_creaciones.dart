@@ -14,7 +14,7 @@ class _CreacionesScreenState extends State<CreacionesScreen> {
   List<File> _creacionesFiles = [];
   bool _loading = false;
 
-  //selección múltiple
+  // selección múltiple
   final Set<File> _selectedFiles = {};
 
   @override
@@ -43,11 +43,10 @@ class _CreacionesScreenState extends State<CreacionesScreen> {
 
       if (mounted) setState(() => _creacionesFiles = pngs);
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error leyendo creaciones: $e')));
-      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error leyendo creaciones: $e')));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -75,14 +74,17 @@ class _CreacionesScreenState extends State<CreacionesScreen> {
     return '$d-$m-$y $hh:$mm';
   }
 
-  //Diálogo para mensaje personalizado y compartir
+  // Diálogo para mensaje personalizado y compartir
   Future<void> _shareSelectedFiles() async {
+    final messenger = ScaffoldMessenger.of(context); // captura antes del await
+
     if (_selectedFiles.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         const SnackBar(content: Text('Selecciona al menos una imagen')),
       );
       return;
     }
+
     String mensaje = '';
     await showDialog(
       context: context,
@@ -111,17 +113,16 @@ class _CreacionesScreenState extends State<CreacionesScreen> {
       },
     );
     if (!mounted) return;
-    if (_selectedFiles.isNotEmpty) {
-      try {
-        await Share.shareXFiles(
-          _selectedFiles.map((f) => XFile(f.path)).toList(),
-          text: mensaje,
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error al compartir: $e')));
-      }
+
+    try {
+      final files = _selectedFiles
+          .map((f) => XFile(f.path, mimeType: 'image/png'))
+          .toList();
+
+      await SharePlus.instance.share(ShareParams(files: files, text: mensaje));
+    } catch (e) {
+      if (!mounted) return;
+      messenger.showSnackBar(SnackBar(content: Text('Error al compartir: $e')));
     }
   }
 
@@ -136,7 +137,6 @@ class _CreacionesScreenState extends State<CreacionesScreen> {
             onPressed: _loadCreaciones,
             icon: const Icon(Icons.refresh),
           ),
-          // NUEVO: Botón compartir
           if (_creacionesFiles.isNotEmpty)
             IconButton(
               tooltip: 'Compartir seleccionados',
@@ -153,6 +153,7 @@ class _CreacionesScreenState extends State<CreacionesScreen> {
             ? const Center(
                 child: Text(
                   'Aún no hay imágenes guardadas.\nCrea tu primer pixel art.',
+                  textAlign: TextAlign.center,
                 ),
               )
             : ListView.builder(
@@ -170,7 +171,7 @@ class _CreacionesScreenState extends State<CreacionesScreen> {
                         width: 48,
                         height: 48,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
+                        errorBuilder: (context, error, stackTrace) =>
                             const CircleAvatar(child: Icon(Icons.image)),
                       ),
                     ),

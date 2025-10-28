@@ -10,7 +10,11 @@ class ConfigurationData extends ChangeNotifier {
   String _paletteKey = 'cian';
   Color _paletteColor = const Color(0xFF009688);
 
-  //lista de creaciones
+  // opacidad de la imagen de referencia
+  double _backgroundOpacity = 0.5;
+  double get backgroundOpacity => _backgroundOpacity;
+
+  // lista de creaciones
   final List<String> _creations = [];
   List<String> get creations => List.unmodifiable(_creations);
 
@@ -28,9 +32,12 @@ class ConfigurationData extends ChangeNotifier {
 
     final savedKey = await _prefsService.getPaletteKey();
     if (savedKey != null) {
-      // usa el setter para mapear color y, de paso, dejar clave coherente
       _applyPaletteFromKey(savedKey, persist: false);
     }
+
+    // Punto 6: cargar opacidad guardada
+    final savedOpacity = await _prefsService.getBackgroundOpacity();
+    if (savedOpacity != null) _backgroundOpacity = savedOpacity;
 
     notifyListeners();
   }
@@ -40,7 +47,7 @@ class ConfigurationData extends ChangeNotifier {
     if (_size == newSize) return;
     _size = newSize;
     notifyListeners();
-    _prefsService.setSize(newSize); // persistir
+    _prefsService.setSize(newSize);
   }
 
   void setPalette(String key) => _applyPaletteFromKey(key, persist: true);
@@ -67,7 +74,15 @@ class ConfigurationData extends ChangeNotifier {
     if (persist) _prefsService.setPaletteKey(_paletteKey);
   }
 
-  //Método para agregar una creación
+  //setter de opacidad
+  Future<void> setBackgroundOpacity(double value) async {
+    if (value == _backgroundOpacity) return;
+    _backgroundOpacity = value;
+    notifyListeners();
+    await _prefsService.setBackgroundOpacity(value);
+  }
+
+  // Método para agregar una creación
   void addCreation(String filePath) {
     _creations.add(filePath);
     notifyListeners();
